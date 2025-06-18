@@ -1,7 +1,8 @@
 import requests
 from config.settings import HF_API_KEY  # مطمئن شو این مقدار رو درست ست کردی
 
-API_URL = "https://api-inference.huggingface.co/models/tiiuae/falcon-7b-instruct"  # مدل گفتگومحور
+# استفاده از مدل کوچک و رایگان HuggingFaceH4/zephyr-7b-beta
+API_URL = "https://api-inference.huggingface.co/models/HuggingFaceH4/zephyr-7b-beta"
 HEADERS = {
     "Authorization": f"Bearer {HF_API_KEY}"
 }
@@ -21,7 +22,13 @@ def ask_openai(prompt: str) -> str:
         }
 
         response = requests.post(API_URL, headers=HEADERS, json=payload)
-        result = response.json()
+        if response.status_code != 200:
+            return f"HTTP Error {response.status_code}: {response.text}"
+
+        try:
+            result = response.json()
+        except Exception as e:
+            return f"JSON Parse Error: {str(e)} | Raw response: {response.text}"
 
         if isinstance(result, list) and "generated_text" in result[0]:
             return result[0]["generated_text"].strip()
