@@ -1,13 +1,27 @@
-import openai
-from config.settings import OPENAI_API_KEY
-openai.api_key = OPENAI_API_KEY
+import requests
+from config.settings import HF_API_KEY  # باید نام متغیر API رو به HF_API_KEY تغییر بدی
+
+API_URL = "https://api-inference.huggingface.co/models/gpt2"  # می‌تونی مدل رو عوض کنی
+HEADERS = {
+    "Authorization": f"Bearer {HF_API_KEY}"
+}
 
 def get_LLM_response(prompt):
     try:
-        response = openai.ChatCompletion.create(
-            model="gpt_3.5_turbo",
-            message=[{"role":"user", "content": prompt}]
-        )
-        return response.choice[0].message.content.strip()
+        payload = {
+            "inputs": prompt,
+            "options": {"wait_for_model": True}  # اگر مدل آماده نباشه، صبر کنه
+        }
+
+        response = requests.post(API_URL, headers=HEADERS, json=payload)
+        result = response.json()
+
+        # بررسی نوع پاسخ
+        if isinstance(result, list) and "generated_text" in result[0]:
+            return result[0]["generated_text"].strip()
+        elif "error" in result:
+            return f"Error from HF: {result['error']}"
+        else:
+            return "مدل پاسخ مشخصی نداد."
     except Exception as e:
-        return f"Error can not connect to language model: {str(e)}"
+        return f"Error connecting to Hugging Face API: {str(e)}"

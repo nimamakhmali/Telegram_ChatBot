@@ -1,6 +1,8 @@
 from telegram import Update
 from telegram.ext import ContextTypes
-from services.openai_api import ask_openai
+#from Telegram_ChatBot.services.HF_api import ask_openai
+from services.HF_api import ask_openai
+
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("Hello Ask Your Question!!!")
