@@ -40,5 +40,5 @@ This Telegram bot leverages the [OpenRouter](https://openrouter.ai) platform to 
 
 #### 1. Clone the repo
 ```bash
-git clone https://github.com/yourusername/Telegram_ChatBot.git
+git clone https://github.com/nimamakhmali/Telegram_ChatBot.git
 cd Telegram_ChatBot
